@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost:3306
--- Время создания: Ноя 28 2013 г., 08:35
+-- Время создания: Ноя 29 2013 г., 12:08
 -- Версия сервера: 5.5.32
 -- Версия PHP: 5.4.20
 
@@ -38,6 +38,11 @@ CREATE TABLE IF NOT EXISTS `features` (
   KEY `feature_type` (`feature_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
+--
+-- Очистить таблицу перед добавлением данных `features`
+--
+
+TRUNCATE TABLE `features`;
 -- --------------------------------------------------------
 
 --
@@ -46,12 +51,17 @@ CREATE TABLE IF NOT EXISTS `features` (
 
 DROP TABLE IF EXISTS `feature_types`;
 CREATE TABLE IF NOT EXISTS `feature_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`feature_type_id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
+--
+-- Очистить таблицу перед добавлением данных `feature_types`
+--
+
+TRUNCATE TABLE `feature_types`;
 -- --------------------------------------------------------
 
 --
@@ -64,11 +74,18 @@ CREATE TABLE IF NOT EXISTS `fridges` (
   `model_id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `power` int(11) NOT NULL,
+  `price` decimal(10,0) NOT NULL,
   PRIMARY KEY (`service_number`),
   KEY `model_id` (`model_id`,`type_id`),
   KEY `type_id` (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
+--
+-- Очистить таблицу перед добавлением данных `fridges`
+--
+
+TRUNCATE TABLE `fridges`;
 -- --------------------------------------------------------
 
 --
@@ -77,12 +94,17 @@ CREATE TABLE IF NOT EXISTS `fridges` (
 
 DROP TABLE IF EXISTS `model`;
 CREATE TABLE IF NOT EXISTS `model` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`model_id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
+--
+-- Очистить таблицу перед добавлением данных `model`
+--
+
+TRUNCATE TABLE `model`;
 -- --------------------------------------------------------
 
 --
@@ -91,12 +113,17 @@ CREATE TABLE IF NOT EXISTS `model` (
 
 DROP TABLE IF EXISTS `type`;
 CREATE TABLE IF NOT EXISTS `type` (
-  `id` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`type_id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
+--
+-- Очистить таблицу перед добавлением данных `type`
+--
+
+TRUNCATE TABLE `type`;
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
@@ -105,15 +132,8 @@ CREATE TABLE IF NOT EXISTS `type` (
 -- Ограничения внешнего ключа таблицы `features`
 --
 ALTER TABLE `features`
-  ADD CONSTRAINT `features_ibfk_2` FOREIGN KEY (`feature_type`) REFERENCES `feature_types` (`id`),
+  ADD CONSTRAINT `features_ibfk_2` FOREIGN KEY (`feature_type`) REFERENCES `feature_types` (`feature_type_id`),
   ADD CONSTRAINT `features_ibfk_1` FOREIGN KEY (`fridge_id`) REFERENCES `fridges` (`service_number`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Ограничения внешнего ключа таблицы `fridges`
---
-ALTER TABLE `fridges`
-  ADD CONSTRAINT `fridges_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `type` (`id`),
-  ADD CONSTRAINT `fridges_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
