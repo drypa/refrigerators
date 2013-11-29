@@ -16,10 +16,6 @@ if (!$mysql_connect) {
 mysql_select_db('fridges', $mysql_connect);
 mysql_set_charset('utf8');
 
-if(isset($_POST["AddModel"])){
-    $model = $_POST["model"];
-    mysql_query("INSERT INTO `model` (`name`) VALUES ('$model')", $mysql_connect);
-}
 
 ?>
 <table>
@@ -34,8 +30,6 @@ if(isset($_POST["AddModel"])){
 
 
 </table>
-<form action="index.php" method="POST">
-    Добавить модель: <input type="text" name="model"> <input type="submit" name="AddModel" value="Добавить">
-</form>
+
 </body>
 </html>
