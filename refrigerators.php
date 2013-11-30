@@ -31,6 +31,10 @@ if (isset($_POST["AddRef"])) {
     $service_number = $_POST["service_number"];
     mysql_query("INSERT INTO `fridges` (`service_number`,`name`,`model_id`,`power`,`price`,`type_id`)
                  VALUES ('$service_number','$name',$model,$power,$price,'$type')", $mysql_connect);
+
+    foreach ($_POST['feature'] as $key => $value) {
+        mysql_query("insert into `features` (`feature_type`,`fridge_id`) values($value,'$service_number')", $mysql_connect);
+    }
 }
 if (isset($_POST["update"])) {
     $type = $_POST["type_id"];
@@ -42,11 +46,15 @@ if (isset($_POST["update"])) {
     $id = $_POST["id"];
     mysql_query("update `fridges` set `name`='$name',
                  `type_id`=$type,`model_id`=$model,`power`=$power,`price`=$price,`service_number`=$service_number
-                  where `service_number`=$id", $mysql_connect);
+                  where `service_number`='$id'", $mysql_connect);
+    mysql_query("delete from `features` where `fridge_id`='$id'");
+    foreach ($_POST['feature'] as $key => $value) {
+        mysql_query("insert into `features` (`feature_type`,`fridge_id`) values($value,'$service_number')", $mysql_connect);
+    }
 }
 if (isset($_POST["delete"])) {
     $id = $_POST["service_number"];
-    mysql_query("delete from `fridges` where `service_number`=$id", $mysql_connect);
+    mysql_query("delete from `fridges` where `service_number`='$id'", $mysql_connect);
 }
 
 
@@ -91,9 +99,21 @@ if (!$mysql_query) {
 }
 $fridges = array();
 while ($row = mysql_fetch_array($mysql_query)) {
+    $id = $row['service_number'];
+    $feature_query = mysql_query("SELECT ft . feature_type_id
+                      FROM  `features` AS f
+                      JOIN `feature_types` AS ft ON ft.feature_type_id = f.feature_type
+                      JOIN `fridges` AS fr ON fr.service_number = f.fridge_id
+                      WHERE fr.service_number =  '$id' ", $mysql_connect);
+    $features = array();
+    while ($f = mysql_fetch_array($feature_query)) {
+        $features[] = $f['feature_type_id'];
+    }
+    $row['features'] = $features;
     $fridges[] = $row;
 }
 mysql_free_result($mysql_query);
+
 
 foreach ($fridges as $f) {
     $type = $f["type_id"];
@@ -104,8 +124,9 @@ foreach ($fridges as $f) {
     $model_name = $f["model_name"];
     $type_name = $f["type_name"];
     $service_number = $f["service_number"];
+    $current_features = $f['features'];
     ?>
-<div>
+<div class='refrigerators-list'>
     <form action="refrigerators.php" method="post">
         <table>
             <tr>
@@ -119,9 +140,9 @@ foreach ($fridges as $f) {
                     foreach ($models as $m) {
                         $id = $m['model_id'];
                         $name = $m['name'];
-                        if($id == $model){
+                        if ($id == $model) {
                             echo("<option selected value='$id'>$name</option>");
-                        }else{
+                        } else {
                             echo("<option value='$id'>$name</option>");
                         }
                     }
@@ -130,15 +151,27 @@ foreach ($fridges as $f) {
                     foreach ($types as $t) {
                         $id = $t['type_id'];
                         $name = $t['name'];
-                        if($id == $type){
+                        if ($id == $type) {
                             echo("<option selected value='$id'>$name</option>");
-                        }else{
+                        } else {
                             echo("<option value='$id'>$name</option>");
                         }
                     }
                     echo("</select> </td>");
                     echo("<td><input type = text value='$power' name ='power' ></td>");
                     echo("<td><input type = text value='$price' name ='price' ></td>");
+                    echo("<td><div style='border:1px solid black'>");
+                    foreach ($feature_types as $t) {
+                        $id = $t['feature_type_id'];
+                        $name = $t['name'];
+                        if (in_array ($id,$current_features)) {
+                            echo("<label><input type='checkbox' checked name='feature[]' value='$id' />$name</label><br>");
+                        } else {
+                            echo("<label><input type='checkbox' name='feature[]' value='$id' />$name</label><br>");
+                        }
+
+                    }
+                    echo("<div></td>");
                     echo("<td ><input type='submit' value='Обновить' name ='update' >");
                     ?>
 
@@ -170,13 +203,13 @@ foreach ($fridges as $f) {
     Название:<input type="text" name="name"><br/>
     Тип:<select name='type_id'>
     <?php
-        foreach ($types as $f) {
-            $id = $f['type_id'];
-            $name = $f['name'];
-            echo("<option value='$id'>$name</option>");
-        }
+    foreach ($types as $f) {
+        $id = $f['type_id'];
+        $name = $f['name'];
+        echo("<option value='$id'>$name</option>");
+    }
     ?>
-    </select><br/>
+</select><br/>
     Модель:<select name='model_id'>
     <?php
     foreach ($models as $model) {
@@ -185,9 +218,18 @@ foreach ($fridges as $f) {
         echo("<option value='$id'>$name</option>");
     }
     ?>
-    </select><br/>
+</select><br/>
+
     Мощность:<input type="text" name="power"><br/>
     Цена:<input type="text" name="price"><br/>
+    <?php
+    foreach ($feature_types as $t) {
+        $id = $t['feature_type_id'];
+        $name = $t['name'];
+        echo("<label><input type='checkbox' name='feature[]' value='$id' />$name</label>");
+    }
+    ?>
+    <br/>
     <input type="submit" name="AddRef" value="Добавить">
 </form>
 </body>

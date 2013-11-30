@@ -6,3 +6,6 @@ form {
 table{
     border-spacing:0;
 }
+.refrigerators-list tr{
+    vertical-align: bottom;
+}
