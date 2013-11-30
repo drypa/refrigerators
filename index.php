@@ -5,6 +5,10 @@
 
 <body style="background-color: #85d0d9">
 <h2>База данных кондиционеров и холодильного оборудования</h2>
+<a href="index.php">Главная</a>
+<a href="type.php">Типы</a>
+<a href="model.php">Модели</a>
+<a href="feature_types.php">Доп. Функции</a>
 <?php
 $server = 'localhost:3306';
 $login = 'root';

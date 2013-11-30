@@ -2,13 +2,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style type="text/css">
-        form{
+        form {
             display: inline-block;
         }
     </style>
 </head>
 
 <body style="background-color: #85d0d9">
+<a href="index.php">Главная</a>
+<a href="type.php">Типы</a>
+<a href="model.php">Модели</a>
+<a href="feature_types.php">Доп. Функции</a>
+
 <?php
 $server = 'localhost:3306';
 $login = 'root';
@@ -49,35 +54,38 @@ foreach ($models as $model) {
     $id = $model['model_id'];
     $name = $model['name'];
     ?>
-<form action="model.php" method="post" >
-    <table>
-        <tr>
-            <td>
-                <?php
-                echo("<input type = text value='$name' name ='model' ><input type='hidden' value='$id' name ='id' ></td >");
-                echo("<td ><input type='submit' value='Обновить' name ='update' >");
-                ?>
+<div>
+    <form action="model.php" method="post">
+        <table>
+            <tr>
+                <td>
+                    <?php
+                    echo("<input type = text value='$name' name ='model' ><input type='hidden' value='$id' name ='id' ></td >");
+                    echo("<td ><input type='submit' value='Обновить' name ='update' >");
+                    ?>
 
-            </td>
-        </tr>
-    </table>
-</form>
-<form action="model.php" method="post">
-    <table>
-        <tr>
-            <td>
-                <?php
-                echo("<input type='hidden' value='$id' name ='id' ></td >");
-                echo("<td ><input type='submit' value='Удалить' name ='delete' >");
-                ?>
-            </td>
-        </tr>
-    </table>
-</form>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form action="model.php" method="post">
+        <table>
+            <tr>
+                <td>
+                    <?php
+                    echo("<input type='hidden' value='$id' name ='id' ></td >");
+                    echo("<td ><input type='submit' value='Удалить' name ='delete' >");
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
     <?php
 }
 ?>
 <br/>
+
 <form action="model.php" method="POST">
     Добавить модель: <input type="text" name="model"> <input type="submit" name="AddModel" value="Добавить">
 </form>
