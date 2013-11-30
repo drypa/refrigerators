@@ -45,8 +45,8 @@ if (isset($_POST["update"])) {
                   where `service_number`=$id", $mysql_connect);
 }
 if (isset($_POST["delete"])) {
-    $id = $_POST["id"];
-    mysql_query("delete from `fridges` where `type_id`=$id", $mysql_connect);
+    $id = $_POST["service_number"];
+    mysql_query("delete from `fridges` where `service_number`=$id", $mysql_connect);
 }
 
 
@@ -146,7 +146,7 @@ foreach ($fridges as $f) {
             </tr>
         </table>
     </form>
-    <form action="type.php" method="post">
+    <form action="refrigerators.php" method="post">
         <table>
             <tr>
                 <td>
