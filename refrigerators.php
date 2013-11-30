@@ -45,11 +45,11 @@ if (isset($_POST["update"])) {
     $service_number = $_POST["service_number"];
     $id = $_POST["id"];
     mysql_query("update `fridges` set `name`='$name',
-                 `type_id`=$type,`model_id`=$model,`power`=$power,`price`=$price,`service_number`=$service_number
+                 `type_id`=$type,`model_id`=$model,`power`=$power,`price`=$price,`service_number`='$service_number'
                   where `service_number`='$id'", $mysql_connect);
     mysql_query("delete from `features` where `fridge_id`='$id'");
     foreach ($_POST['feature'] as $key => $value) {
-        mysql_query("insert into `features` (`feature_type`,`fridge_id`) values($value,'$service_number')", $mysql_connect);
+        mysql_query("insert into `features` (`feature_type`,`fridge_id`) values($value,'$id')", $mysql_connect);
     }
 }
 if (isset($_POST["delete"])) {
