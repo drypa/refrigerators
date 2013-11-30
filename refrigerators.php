@@ -33,13 +33,20 @@ if (isset($_POST["AddRef"])) {
                  VALUES ('$service_number','$name',$model,$power,$price,'$type')", $mysql_connect);
 }
 if (isset($_POST["update"])) {
-    $type = $_POST["type"];
+    $type = $_POST["type_id"];
+    $name = $_POST["name"];
+    $model = $_POST["model_id"];
+    $power = $_POST["power"];
+    $price = $_POST["price"];
+    $service_number = $_POST["service_number"];
     $id = $_POST["id"];
-    mysql_query("update `type` set `name`='$type' where `type_id`=$id", $mysql_connect);
+    mysql_query("update `fridges` set `name`='$name',
+                 `type_id`=$type,`model_id`=$model,`power`=$power,`price`=$price,`service_number`=$service_number
+                  where `service_number`=$id", $mysql_connect);
 }
 if (isset($_POST["delete"])) {
     $id = $_POST["id"];
-    mysql_query("delete from `type` where `type_id`=$id", $mysql_connect);
+    mysql_query("delete from `fridges` where `type_id`=$id", $mysql_connect);
 }
 
 
@@ -99,7 +106,7 @@ foreach ($fridges as $f) {
     $service_number = $f["service_number"];
     ?>
 <div>
-    <form action="type.php" method="post">
+    <form action="refrigerators.php" method="post">
         <table>
             <tr>
                 <td>
@@ -107,7 +114,7 @@ foreach ($fridges as $f) {
                     echo("
                     <input type = text value='$service_number' name ='service_number' >
                     <input type = text value='$name' name ='name' >
-                    <input type='hidden' value='$service_number' name ='service_number' ></td >");
+                    <input type='hidden' value='$service_number' name ='id' ></td >");
                     echo(" <td><select name='model_id'>");
                     foreach ($models as $m) {
                         $id = $m['model_id'];
@@ -119,7 +126,7 @@ foreach ($fridges as $f) {
                         }
                     }
                     echo("</select> </td>");
-                    echo(" <td><select name='model_id'>");
+                    echo(" <td><select name='type_id'>");
                     foreach ($types as $t) {
                         $id = $t['type_id'];
                         $name = $t['name'];
@@ -144,7 +151,7 @@ foreach ($fridges as $f) {
             <tr>
                 <td>
                     <?php
-                    echo("<input type='hidden' value='$id' name ='id' ></td >");
+                    echo("<input type='hidden' value='$service_number' name ='service_number' ></td >");
                     echo("<td ><input type='submit' value='Удалить' name ='delete' >");
                     ?>
                 </td>
